@@ -60,7 +60,7 @@ fi
 # ── 3. HuggingFace authentication ─────────────────────────────────────────────
 if [ -n "$HF_TOKEN" ]; then
     echo "🤗 Authenticating to HuggingFace..."
-    huggingface-cli login --token "$HF_TOKEN" --add-to-git-credential
+    python -c "from huggingface_hub import login; login(token='${HF_TOKEN}', add_to_git_credential=True)"
     echo "✅ HuggingFace authenticated"
 else
     echo "⚠️  HF_TOKEN not set — Flux.1-dev (gated) and LTX-2 downloads may fail"
