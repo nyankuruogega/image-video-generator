@@ -482,6 +482,10 @@ def generate_video(
     try:
         from ltx_pipelines.utils.args import ImageConditioningInput
 
+        # Unload image models before loading LTX-2 Distilled to avoid OOM
+        FluxSchnellModelManager.unload()
+        FluxDevModelManager.unload()
+
         pipe = LTX2DistilledModelManager.get_pipeline()
 
         # Save image to temp file — DistilledPipeline takes a file path
