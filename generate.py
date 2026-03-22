@@ -547,11 +547,11 @@ def build_ui():
                 )
                 with gr.Row():
                     img_width = gr.Slider(
-                        minimum=512, maximum=1536, step=64, value=1024,
+                        minimum=512, maximum=2048, step=64, value=1024,
                         label="Width"
                     )
                     img_height = gr.Slider(
-                        minimum=512, maximum=1536, step=64, value=1024,
+                        minimum=512, maximum=2048, step=64, value=1024,
                         label="Height"
                     )
                 img_btn    = gr.Button("Generate Image", variant="primary")
