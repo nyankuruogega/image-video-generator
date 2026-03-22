@@ -7,6 +7,7 @@ import gc
 import io
 import os
 import tempfile
+import traceback
 
 os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 
@@ -442,7 +443,7 @@ def generate_image(prompt: str, model_name: str, width: int, height: int) -> tup
         print("   ✅ Image generated")
         return image, "Image generated successfully."
     except Exception as e:
-        print(f"   ❌ Image generation failed: {e}")
+        traceback.print_exc()
         return None, f"Error: {e}"
 
 
@@ -520,7 +521,7 @@ def generate_video(
         return out_path, f"Video generated: {len(frames)} frames @ {fps} fps"
 
     except Exception as e:
-        print(f"   ❌ Video generation failed: {e}")
+        traceback.print_exc()
         return None, f"Error: {e}"
 
 
