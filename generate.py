@@ -478,6 +478,7 @@ def generate_video(
     h64 = (h // 64) * 64
 
     prompt = video_prompt.strip() or "natural movement, dynamic motion"
+    seed = int(seed) if seed is not None else 42
 
     try:
         from ltx_pipelines.utils.args import ImageConditioningInput
