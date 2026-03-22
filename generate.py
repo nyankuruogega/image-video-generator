@@ -222,7 +222,7 @@ class _MemoryEfficientDistilledPipeline:
         from ltx_core.components.noisers import GaussianNoiser
         from ltx_core.model.audio_vae import decode_audio as vae_decode_audio
         from ltx_core.model.upsampler import upsample_video
-        from ltx_core.model.video_vae import TilingConfig, decode_video as vae_decode_video
+        from ltx_core.model.video_vae import decode_video as vae_decode_video
         from ltx_core.types import LatentState, VideoPixelShape
         from ltx_pipelines.utils import euler_denoising_loop
         from ltx_pipelines.utils.helpers import (
