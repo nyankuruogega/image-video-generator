@@ -30,7 +30,7 @@ if [ ! -f /workspace/.deps-installed ]; then
     echo "📦 Installing dependencies..."
 
     pip install -q gradio
-    pip install -q Pillow imageio-ffmpeg "jinja2>=3.1.5"
+    pip install -q Pillow imageio-ffmpeg "jinja2>=3.1.5" protobuf
     pip install -q "transformers>=4.57.0" accelerate
     pip install -q "git+https://github.com/huggingface/diffusers.git"
 
