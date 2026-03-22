@@ -316,7 +316,7 @@ class _MemoryEfficientDistilledPipeline:
         del video_encoder
         cleanup_memory()
 
-        tiling_config = tiling_config or TilingConfig()
+        tiling_config = tiling_config or TilingConfig.default()
         decoded_video = vae_decode_video(
             video_state.latent, self.model_ledger.video_decoder(), tiling_config, generator
         )
