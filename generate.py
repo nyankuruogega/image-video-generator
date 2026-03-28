@@ -314,7 +314,15 @@ class _MemoryEfficientDistilledPipeline:
         torch.cuda.synchronize()
         del transformer
         del video_encoder
+        # Free upscaled_video_latent — large full-res latent from stage 1, no longer
+        # needed after stage 2.  Important for long videos (15s+) to avoid OOM.
+        del upscaled_video_latent
         cleanup_memory()
+
+        # Use tiled decode for long videos to avoid OOM during VAE decode.
+        if tiling_config is None:
+            from ltx_core.model.video_vae import TilingConfig
+            tiling_config = TilingConfig.default()
 
         decoded_video = vae_decode_video(
             video_state.latent, self.model_ledger.video_decoder(), tiling_config, generator
