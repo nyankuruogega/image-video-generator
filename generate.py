@@ -12,12 +12,6 @@ import traceback
 os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 
 import torch
-
-# cuDNN fails to initialize on this container (cudnnCreate returns
-# CUDNN_STATUS_NOT_INITIALIZED with compute_capability 0,0 despite the GPU
-# being available).  Disabling it falls back to PyTorch's own CUDA kernels.
-torch.backends.cudnn.enabled = False
-
 import gradio as gr
 from PIL import Image
 from diffusers.utils import export_to_video

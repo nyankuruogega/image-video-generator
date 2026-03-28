@@ -6,11 +6,6 @@
 
 set -e
 
-# Register nvidia pip-package libs (cuDNN, etc.) with the dynamic linker.
-# These are not in LD_LIBRARY_PATH by default, causing CUDNN_STATUS_NOT_INITIALIZED.
-echo '/usr/local/lib/python3.11/dist-packages/nvidia/cudnn/lib' > /etc/ld.so.conf.d/nvidia-cudnn.conf
-ldconfig
-
 REPO="https://${GITHUB_TOKEN}@github.com/nyankuruogega/image-video-generator.git"
 APP_DIR="/workspace"
 
@@ -54,6 +49,11 @@ if [ ! -f /workspace/.deps-installed ]; then
     # Pin transformers back (ltx-core installs 5.x which breaks Gemma3)
     pip install -q "transformers==4.57.6"
 
+    # Pin cuDNN back to cu12 (ltx-core pulls in nvidia-cudnn-cu13 which overwrites
+    # the cu12 libs with CUDA-13-only builds, causing CUDNN_STATUS_NOT_INITIALIZED)
+    pip uninstall -y nvidia-cudnn-cu13 || true
+    pip install -q --force-reinstall "nvidia-cudnn-cu12==9.1.0.70"
+
     pip install -q "imageio[ffmpeg]"
 
     touch /workspace/.deps-installed
@@ -88,4 +88,12 @@ echo "✅ JupyterLab started"
 # ── 5. Start the app ──────────────────────────────────────────────────────────
 echo "🚀 Starting Image & Video Generator on port 7860..."
 cd "$APP_DIR"
+
+# Ensure the nvidia-cudnn shared libraries installed via pip are on the linker path.
+CUDNN_LIB="$(python -c "import nvidia.cudnn; import os; print(os.path.dirname(nvidia.cudnn.__file__))" 2>/dev/null)/lib"
+if [ -d "$CUDNN_LIB" ]; then
+    export LD_LIBRARY_PATH="$CUDNN_LIB:${LD_LIBRARY_PATH}"
+    echo "✅ cuDNN library path added: $CUDNN_LIB"
+fi
+
 python generate.py
