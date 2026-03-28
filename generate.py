@@ -316,6 +316,11 @@ class _MemoryEfficientDistilledPipeline:
         del video_encoder
         cleanup_memory()
 
+        # Default to tiled decode to avoid OOM (which surfaces as CUDNN_STATUS_NOT_INITIALIZED).
+        if tiling_config is None:
+            from ltx_core.model.video_vae import TilingConfig
+            tiling_config = TilingConfig.default()
+        torch.cuda.synchronize()
         decoded_video = vae_decode_video(
             video_state.latent, self.model_ledger.video_decoder(), tiling_config, generator
         )
