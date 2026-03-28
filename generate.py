@@ -314,28 +314,13 @@ class _MemoryEfficientDistilledPipeline:
         torch.cuda.synchronize()
         del transformer
         del video_encoder
-        # Free everything that's no longer needed before loading the decoders.
-        # video_context/audio_context (text embeddings), upscaled_video_latent,
-        # and both sets of conditionings are large and unused from here on.
-        video_latent = video_state.latent
-        audio_latent = audio_state.latent
-        del video_state, audio_state
-        del video_context, audio_context
-        del upscaled_video_latent
-        del stage_1_conditionings, stage_2_conditionings
-        del stage_1_sigmas, stage_2_sigmas
         cleanup_memory()
 
-        # Default to tiled decode to avoid OOM (which surfaces as CUDNN_STATUS_NOT_INITIALIZED).
-        if tiling_config is None:
-            from ltx_core.model.video_vae import TilingConfig
-            tiling_config = TilingConfig.default()
-        torch.cuda.synchronize()
         decoded_video = vae_decode_video(
-            video_latent, self.model_ledger.video_decoder(), tiling_config, generator
+            video_state.latent, self.model_ledger.video_decoder(), tiling_config, generator
         )
         decoded_audio = vae_decode_audio(
-            audio_latent, self.model_ledger.audio_decoder(), self.model_ledger.vocoder()
+            audio_state.latent, self.model_ledger.audio_decoder(), self.model_ledger.vocoder()
         )
         return decoded_video, decoded_audio
 
