@@ -6,6 +6,11 @@
 
 set -e
 
+# Register nvidia pip-package libs (cuDNN, etc.) with the dynamic linker.
+# These are not in LD_LIBRARY_PATH by default, causing CUDNN_STATUS_NOT_INITIALIZED.
+echo '/usr/local/lib/python3.11/dist-packages/nvidia/cudnn/lib' > /etc/ld.so.conf.d/nvidia-cudnn.conf
+ldconfig
+
 REPO="https://${GITHUB_TOKEN}@github.com/nyankuruogega/image-video-generator.git"
 APP_DIR="/workspace"
 
